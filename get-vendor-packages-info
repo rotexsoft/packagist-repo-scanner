@@ -1,0 +1,67 @@
+#!/usr/bin/env php
+<?php
+declare(strict_types=1);
+
+require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+
+$vendorName = $argv[1];
+$climate = new League\CLImate\CLImate;
+$generator = new \Spatie\Packagist\PackagistUrlGenerator();
+$spatiePackagistClient = new \Spatie\Packagist\PackagistClient(new \GuzzleHttp\Client(), $generator);
+$packageNamesResult = $spatiePackagistClient->getPackagesNamesByVendor($vendorName) ?? [];
+$packageNames = [];
+
+if(\count($packageNamesResult) > 0) {
+    
+    $packageNames = array_first($packageNamesResult);
+}
+
+//$knpPackagistClient = new \Packagist\Api\Client();
+//$packageNames = $knpPackagistClient->all(['vendor'=>'rotexsoft']);
+
+$results = [];
+
+foreach ($packageNames as $packageName) {
+    
+    echo "Getting package info for `{$packageName}`" . PHP_EOL;
+    [$vendor, $pckgName] = \explode('/', $packageName);
+    echo "Vendor: `$vendor`, Package: `{$pckgName}`" . PHP_EOL;
+    
+    [$latestVersion, $minimumPhpVersion] = 
+        \Rotexsoft\PackagistRepoScanner\getLatestStableVersion(
+            $vendor, $pckgName
+        ) ?? [null, null];
+    
+    if($latestVersion === null) {
+        
+        //echo 'Could not get the latest stable version' . PHP_EOL;
+        
+        $results[] =  [
+            'Package Name'          => $packageName,
+            'Latest Stable Version' => 'Unknown',
+            'Minimum PHP Version'   => 'Unknown',
+        ];
+        
+    } else {
+    
+        //echo "Latest stable version: `{$latestVersion}`" . PHP_EOL;
+        //echo "Minimum PHP version: `{$minimumPhpVersion}`" . PHP_EOL;
+        
+        $results[] =  [
+            'Package Name'          => $packageName,
+            'Latest Stable Version' => $latestVersion,
+            'Minimum PHP Version'   => $minimumPhpVersion,
+        ];
+    }
+    
+    echo PHP_EOL;
+}
+
+if($results !== []) {
+
+    $climate->table($results);
+    
+} else {
+ 
+    echo "No version info found for packages by vendor `{$vendorName}`" . PHP_EOL;
+}

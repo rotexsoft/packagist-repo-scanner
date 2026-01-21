@@ -1,0 +1,29 @@
+{
+    "name": "rotexsoft/packagist-repo-scanner",
+    "description": "A tool for getting info about packages on https://packagist.org/",
+    "type": "project",
+    "license": "BSD-4-Clause",
+    "autoload": {
+        "psr-4": {
+            "Rotexsoft\\PackagistRepoScanner\\": "src/"
+        },
+        "files" : [
+            "src/helper-functions.php"
+        ]
+    },
+    "authors": [
+        {
+            "name": "Rotimi Adegbamigbe"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "php": ">=8.3.0",
+        "knplabs/packagist-api": "^2.1",
+        "spatie/packagist-api": "^2.1",
+        "symfony/polyfill-php84": "^1.33",
+        "symfony/polyfill-php85": "^1.33",
+        "league/climate": "^3.10"
+    }
+}
