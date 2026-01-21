@@ -14,6 +14,8 @@ You must have the following installed:
 
 Clone this repo and cd into the cloned repo and run **composer install**.
 
+> Run **git pull origin** to keep your local copy of this repository up to date from time to time
+
 Then go ahead to run any of the scripts described below.
 
 
