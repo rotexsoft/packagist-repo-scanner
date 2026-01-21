@@ -1,0 +1,104 @@
+#!/usr/bin/env php
+<?php
+declare(strict_types=1);
+
+require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+
+$packageNames = [];
+$climate = new League\CLImate\CLImate;
+$potentialPathToComposerDotJson = $argv[1];
+$generator = new \Spatie\Packagist\PackagistUrlGenerator();
+$spatiePackagistClient = new \Spatie\Packagist\PackagistClient(
+    new \GuzzleHttp\Client(), $generator
+);
+
+if(\file_exists($potentialPathToComposerDotJson)) {
+    
+    $composerJsonArray = \json_decode( 
+        (\file_get_contents($potentialPathToComposerDotJson) ?: []), true
+    );
+    
+} else {
+    
+    $climate->to('error')->red("Non-existent file `{$potentialPathToComposerDotJson}` specified.");
+    exit;
+}
+
+if(isset($composerJsonArray['require']))  {
+
+    foreach ($composerJsonArray['require'] as $potenitalPackageName => $version) {
+        
+        if(\str_contains($potenitalPackageName, '/')) {
+            
+            $packageNames[] = $potenitalPackageName;
+        }
+    }
+}
+
+if(isset($composerJsonArray['require-dev'])) {
+
+    foreach ($composerJsonArray['require'] as $potenitalPackageName => $version) {
+        
+        if(\str_contains($potenitalPackageName, '/')) {
+            
+            $packageNames[] = $potenitalPackageName;
+        }
+    }
+}
+
+$results = [];
+
+foreach (\array_unique($packageNames) as $packageName) {
+    
+    $climate->to('out')->green("Getting package info for `{$packageName}`");
+    
+    [$vendor, $pckgName] = \explode('/', $packageName);
+    $climate->to('out')->green("Vendor: `$vendor`, Package: `{$pckgName}`");
+    
+    $currentlyInstalledVersion = 'Not Installed';
+    
+    if(\Composer\InstalledVersions::isInstalled($packageName)) {
+        
+        $currentlyInstalledVersion = 
+            \Composer\InstalledVersions::getVersion($packageName) 
+                ?? $currentlyInstalledVersion;
+    }
+    
+    [$latestVersion, $minimumPhpVersion] = 
+        \Rotexsoft\PackagistRepoScanner\getLatestStableVersionInfo(
+            $vendor, $pckgName
+        ) ?? [null, null];
+    
+    if($latestVersion === null) {
+
+        $results[] =  [
+            'Package Name'              => $packageName,
+            'Latest Stable Version'     => 'Unknown',
+            'Locally Installed Version' => $currentlyInstalledVersion,
+            'Minimum PHP Version'       => 'Unknown',
+        ];
+        
+    } else {
+
+        $results[] =  [
+            'Package Name'              => $packageName,
+            'Latest Stable Version'     => $latestVersion,
+            'Locally Installed Version' => $currentlyInstalledVersion,
+            'Minimum PHP Version'       => $minimumPhpVersion,
+        ];
+    }
+    
+    echo PHP_EOL;
+}
+
+if($results !== []) {
+
+    $climate->table($results);
+    
+} else {
+ 
+    $climate->to('out')
+            ->yellow("No packages were found in the `require` and `require-dev` section of `{$potentialPathToComposerDotJson}`");
+}
+
+echo PHP_EOL;

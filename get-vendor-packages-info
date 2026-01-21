@@ -18,14 +18,14 @@ if(\count($packageNamesResult) > 0) {
 
 //$knpPackagistClient = new \Packagist\Api\Client();
 //$packageNames = $knpPackagistClient->all(['vendor'=>'rotexsoft']);
-
 $results = [];
 
 foreach ($packageNames as $packageName) {
     
-    echo "Getting package info for `{$packageName}`" . PHP_EOL;
+    $climate->to('out')->green("Getting package info for `{$packageName}`");
+    
     [$vendor, $pckgName] = \explode('/', $packageName);
-    echo "Vendor: `$vendor`, Package: `{$pckgName}`" . PHP_EOL;
+    $climate->to('out')->green("Vendor: `$vendor`, Package: `{$pckgName}`");
     
     [$latestVersion, $minimumPhpVersion] = 
         \Rotexsoft\PackagistRepoScanner\getLatestStableVersionInfo(
@@ -62,6 +62,8 @@ if($results !== []) {
     $climate->table($results);
     
 } else {
- 
-    echo "No version info found for packages by vendor `{$vendorName}`" . PHP_EOL;
+
+    $climate->to('out')->yellow("No version info found for packages by vendor `{$vendorName}`");
 }
+
+echo PHP_EOL;
