@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Rotexsoft\PackagistRepoScanner;
 
-function getLatestStableVersion(string $vendor, string $package): ?array {
+function getLatestStableVersionInfo(string $vendor, string $package): ?array {
     
     $url = "https://repo.packagist.org/p2/$vendor/$package.json";
     $json = json_decode(file_get_contents($url), true);

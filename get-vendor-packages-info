@@ -28,7 +28,7 @@ foreach ($packageNames as $packageName) {
     echo "Vendor: `$vendor`, Package: `{$pckgName}`" . PHP_EOL;
     
     [$latestVersion, $minimumPhpVersion] = 
-        \Rotexsoft\PackagistRepoScanner\getLatestStableVersion(
+        \Rotexsoft\PackagistRepoScanner\getLatestStableVersionInfo(
             $vendor, $pckgName
         ) ?? [null, null];
     
