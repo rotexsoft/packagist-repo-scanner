@@ -1,6 +1,6 @@
 {
     "name": "rotexsoft/packagist-repo-scanner",
-    "description": "A tool for getting info about packages on https://packagist.org/",
+    "description": "A tool for getting info about packages on https://packagist.org/ using the packagist API",
     "type": "project",
     "license": "BSD-4-Clause",
     "autoload": {
