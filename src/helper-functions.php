@@ -33,6 +33,10 @@ function getLatestStableVersionInfo(string $vendor, string $package): ?array {
     return [
         $latestStableVersion, 
         $latestStableVersionInfo['require']['php']
-            ?? 'unknown php version'
+        ?? 
+        (
+            $latestStableVersionInfo['require']['php-64bit']
+            ??'unknown php version'
+        )
     ];
 }
