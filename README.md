@@ -24,9 +24,9 @@ information about each package.
 
 Usage:
 
-**$ ./get-vendor-packages-info <vendor-name>**
+**$ ./get-vendor-packages-info \<vendor-name\>**
 
-> **<vendor-name>** is the name of the vendor whose packages you want to retrieve information for
+> **\<vendor-name\>** is the name of the vendor whose packages you want to retrieve information for
 
 For example, to get information about all packages authored by the vendor **monolog**, run code below in your terminal from the directory you cloned this repo into
 
