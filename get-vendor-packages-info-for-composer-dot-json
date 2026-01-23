@@ -37,7 +37,7 @@ if(isset($composerJsonArray['require']))  {
 
 if(isset($composerJsonArray['require-dev'])) {
 
-    foreach ($composerJsonArray['require'] as $potenitalPackageName => $version) {
+    foreach ($composerJsonArray['require-dev'] as $potenitalPackageName => $version) {
         
         if(\str_contains($potenitalPackageName, '/')) {
             
